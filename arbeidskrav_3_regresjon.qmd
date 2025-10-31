@@ -4,6 +4,114 @@ format: html
 editor: visual
 ---
 
+# Beskrive sammenhenger
+
+## Hvordan kan vi beskrive sammenhenger mellom to kontinuerlige variabler i en regresjonsmodell og hva er koblingen mellom en korrelasjonskoeffisient og estimatet i en regresjonsmodell?
+
+Når vi skal beskrive sammenhenger mellom to kontinuerlige variabler i en regresjonsmodell, viser modellen hvordan endring i én variabel henger sammen med endringer i den andre. For eksempel kan vi undersøke hvordan den uavhengige variabelen vo2maks påvirker den avhengige variabelen Wmaks
+
+En enkel lineær regresjon kan uttrykkes slik:
+
+### Yi=β0+β1Xi+εi
+
+### ​
+
+Her representerer $\beta_0$ skjæringspunktet, $\beta_1$ stigningstallet (den gjennomsnittlige endringen i *Y* per enhet *X*), og $\varepsilon_i$ den tilfeldige variasjonen. Dersom *X = vo2maks* og *Y = Wmaks*, vil $\beta_1$ vise hvor mye wattmaks i snitt øker per ekstra ml/min i vo2maks.
+
+Sammenhengen kan også beskrives ved hjelp av korrelasjonskoeffisienten (*r*), som varierer fra -1 til 1 og uttrykker styrken og retningen på sammenhengen. En positiv korrelasjon betyr at begge variablene øker sammen, mens en negativ korrelasjon betyr at når én øker, går den andre ned. I enkel lineær regresjon henger korrelasjon og regresjon sammen: jo sterkere *r*, desto tydeligere blir sammenhengen i modellen. Forklaringsgraden (*R²*) er lik *r²*, og viser hvor stor andel av variasjonen i *Y* som forklares av *X*.
+
+Eksempelet viser at korrelasjonen mellom vo2maks og maksimal effekt er r = 0,79, som indikerer en sterk positiv sammenheng. Regresjonskoeffisienten β₁ = 0,056 betyr at for hver økning på 1 ml/min i vo2maks, øker wattmaks med gjennomsnittlig 0,056 watt (56 watt per 1000 ml/min økning). R² viser at 63% av variasjonen i wattmaks kan forklares av forskjeller i vo2maks.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(exscidata)
+
+cycling <- exscidata::cyclingstudy
+
+
+m1 <- lm(end.load ~ VO2.max, data = cycling)
+summary(m1)
+
+
+cor.test(cycling$VO2.max, cycling$end.load)
+
+
+ggplot(cycling, aes(x = VO2.max, y = end.load)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_minimal()
+
+```
+
+## Hvordan kan vi beskrive sammenhengen mellom en kontinuerlig avhengig variabel og en uavhengig kategorisk variable med en regresjonsmodell og hvordan tolker vi estimatet
+
+Når den avhengige variabelen er kontinuerlig, men den uavhengige er kategorisk, kan vi fortsatt bruke en lineær regresjonsmodell for å undersøke forskjeller mellom grupper. Vi kan undersøke om menn og kvinner har forskjellig gjennomsnittlig løpshastighet i Boston Marathon. Modellen kan skrives som:
+
+$$Yi=β0+β1(genderM)i+εi$$
+
+​Her representerer $\beta_0$ gjennomsnittet for referansegruppen (kvinner, kodet som 0), mens $\beta_1$ viser forskjellen i gjennomsnittlig hastighet mellom menn og kvinner. Dersom $\beta_1$ er positiv, betyr det at menn i gjennomsnitt har høyere hastighet enn kvinner med en verdi tilsvarende størrelsen på $\beta_1$. Resultatene fra regresjonsmodellen viste at gjennomsnittshastigheten for kvinner var β₀ = 9,58 km/t, mens menn i gjennomsnitt løp β₁ = 0,86 km/t raskere.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(exscidata)
+
+boston_dat <- exscidata::boston %>% 
+  filter(year == 2012) %>% 
+  mutate(speed = 42 / (seconds / 60 / 60))
+
+
+m2 <- lm(speed ~ gender, data = boston_dat)
+summary(m2)
+
+
+ggplot(boston_dat, aes(x = gender, y = speed)) +
+  geom_boxplot() +
+  theme_minimal()
+
+```
+
+## Hvordan kan vi tolke estimatet i en generalisert lineær modell hvor den avhengige variabelen er enten 1 eller 0? Hva betyr «link-function» i denne sammenhengen og hva gjør den?
+
+Når den avhengige variabelen bare kan være 1 eller 0 (for eksempel skade = 1 og ingen skade = 0), bruker vi en logistisk regresjon. Det er en type generalisert lineær modell som gjør det mulig å analysere sannsynligheter.
+
+Siden sannsynligheter alltid må ligge mellom 0 og 1, brukes en link-funksjon kalt logit, som gjør om sannsynligheten (p) til log-odds. Dette lar oss bruke en lineær modell til å beskrive sammenhengen mellom variablene:
+
+logit(p)=log⁡(p1−p)=β0+β1Xi​
+
+Her viser β1​ hvordan log-oddsen for skade endres når den uavhengige variabelen endres med én enhet. Når vi tar den naturlige eksponenten av estimatet (eβ1​), får vi odds-ratio, som forteller hvor mye oddsen for skade øker eller minker.
+
+I eksempelet under undersøkes sammenhengen mellomvoppvarmingsrutine og hamtringsfleksibilitet og risiko for skade. Modellen predikerer log-odds for skade, som deretter omregnes til odds ved hjelp av exp()-funksjonen. Når hamstringsfleksibiliteten er 80, viser resultatene at oddsen for skade er 1,70 uten oppvaring og 0,55 med oppvarming. Dette betyr at spillere som følger oppvarmingsrutinen har lavere odds for skade sammenlignet med dem som ikke gjør det.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(exscidata)
+
+
+m_hamstring <- glm(Injury_Next_Season ~ Warmup_Routine_Adherence + Hamstring_Flexibility,
+                   data = injury,
+                   family = binomial)
+
+ny <- tibble(
+  Warmup_Routine_Adherence = c(0, 1),
+  Hamstring_Flexibility    = 80
+)
+
+ny$odds <- exp(predict(m_hamstring, newdata = ny, type = "link"))
+ny
+
+```
+
 ### *Predikere mulige observasjoner*
 
 \- Bruk data fra datasettet strengthvolume og lag en prediksjonsmodell for legext basert på legpress.\
@@ -52,14 +160,9 @@ For prediksjoner innad i hvert kjønn bruker vi den samme stigningen på 0.164, 
 
 For en gitt legpress verdi (200kg), gir modellen oss et prediksjonsintervall. For en ny kvinnelig utøver med 200kg i legpress, sier modellen at vi med 95% sikkerhet kan forvente at hennes faktiske legext verdi vil være mellom lwr 35.1 kg, fit på 66.4 og upr 97.9 kg. Intervallet tar høyde for den naturlige variasjonen som vil være mellom individuelle utøvere.
 
-
-
-
 ### *Trekke slutninger*
 
-\- Bruk datasettet strengtvolume og formuler en modell som gir oss et estimat på forskjell i gjennomsnitt
-mellom sets i forandring fra tidspunkt pre til tidspunkt post i legext. Gi begrunnelse til valg av modell og
-håndtering av data.
+\- Bruk datasettet strengtvolume og formuler en modell som gir oss et estimat på forskjell i gjennomsnitt mellom sets i forandring fra tidspunkt pre til tidspunkt post i legext. Gi begrunnelse til valg av modell og håndtering av data.
 
 ```{r}
 #| echo: false
@@ -102,8 +205,9 @@ print(resultater)
 ```
 
 #### Begrunnelse
+
 Den individuelle utgangspunktvariasjonen av leg extentions er på 17,68 enheter (SD_Intercept), i tillegg er pre -og postverdiene avhengige, de er fra samme individ. Dette betyr at det ikke er gunstig å anvende en tradisjonell lineær modell, siden den antar at pre -og postverdiene var uavhengige. Modellen hadde heller ikke tatt rede for variasjon i utgangspunkt. Derfor valgte vi å ta i bruk en mixed model for å finne den gjennomsnittlige forskjellen av endring fra pre til post mellom ett og flere sett. En mixed model vil anta at det er variasjoner imellom individer og innad i samme individ. I tillegg vil den anta at det er sammenheng mellom pre -og posttest, siden det er de samme individene som gjennomfører begge tester.
 
-
 ### Hvordan kan vi bruke regresjonsmodellen for å si noe om populasjonen som dataene kommer fra?
+
 Modellen tar pre og "multiple sets" gruppen som utgangspunkt i analysen. Dette vil si at "Multiple sets" gruppen hadde 89,32 enheter belastning ved pre (intercept), som var 32,47 enheter lavere ved pre enn ved post (timepre). "Single sets" gruppen hadde et utgangspunkt 3,94 enheter lavere enn "multiple sets" gruppen(setssingle). "Multiple sets" gruppen økte med 4,39 enheter mer enn "Single sets" gruppen(timepre:setssingle). Derfor kan modellen indikere at flere sett leder til større økning av styrke i populasjonen.
