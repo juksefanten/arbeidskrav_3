@@ -1,0 +1,53 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+### *Predikere mulige observasjoner*
+
+\- Bruk data fra datasettet strengthvolume og lag en prediksjonsmodell for legext basert på legpress.\
+- Bruk data fra en tidspunkt (time) og et treningsvolum (sets)
+
+```{r}
+
+library(tidyverse)
+library(exscidata)
+data("strengthvolume")
+
+#liten titt på datasett
+glimpse(strengthvolume)
+
+#filtrere og omstrukturere data, (et tidspunkt + et treningsvolum)
+dat <- exscidata::strengthvolume %>%
+  filter(time == "post", sets == "multiple") %>%
+  select(participant, sex, exercise, load) %>%
+  pivot_wider(names_from = exercise, values_from = load, values_fn = mean)
+
+#lage modellene
+m1 <- lm(legext ~ legpress, data = dat)
+m2 <- lm(legext ~ sex + legpress, data = dat)
+
+summary(m1)
+summary(m2)
+
+#predict legext uavhengig av kjønn ved 200kg legpress
+predict(m1, newdata = data.frame(legpress = 200), interval = "prediction")
+
+#predict legext på menn og kvinner ved 200kg legpress
+predict(m2, newdata = data.frame(legpress = 200, sex = "male"), interval = "prediction")
+predict(m2, newdata = data.frame(legpress = 200, sex = "female"), interval = "prediction")
+
+
+
+```
+
+### Hvordan spiller kjønn (sex) inn på prediksjonen, hvordan kan du bruke kjønn for å si noe om prediksjoner innad kjønn og i gjennomsnitt i begge kjønn?
+
+Kjønn har en stor effekt. Modellen viser oss at menn har 28.4 kg høyere forventet legext enn kvinner, selv når begge har 200kg legpress. Dette betyr at for å gjøre en god prediksjon, må vi absolutt ta kjønn med i beregningen.
+
+For prediksjoner innad i hvert kjønn bruker vi den samme stigningen på 0.164, men med forskjellig utgangspunkt. For en gjennomsnittlig prediksjon over begge kjønn får vi et mindre nøyaktig estimat som egentlig ikke passer for noen av gruppene.
+
+### Modellen gir deg et estimat, men for en gitt verdi på legpress, hva sier modellen om i hvilket område vi kan forvente å finne nye observasjoner?
+
+For en gitt legpress verdi (200kg), gir modellen oss et prediksjonsintervall. For en ny kvinnelig utøver med 200kg i legpress, sier modellen at vi med 95% sikkerhet kan forvente at hennes faktiske legext verdi vil være mellom lwr 35.1 kg, fit på 66.4 og upr 97.9 kg. Intervallet tar høyde for den naturlige variasjonen som vil være mellom individuelle utøvere.
