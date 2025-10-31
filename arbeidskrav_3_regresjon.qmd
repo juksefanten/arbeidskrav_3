@@ -51,3 +51,59 @@ For prediksjoner innad i hvert kjønn bruker vi den samme stigningen på 0.164, 
 ### Modellen gir deg et estimat, men for en gitt verdi på legpress, hva sier modellen om i hvilket område vi kan forvente å finne nye observasjoner?
 
 For en gitt legpress verdi (200kg), gir modellen oss et prediksjonsintervall. For en ny kvinnelig utøver med 200kg i legpress, sier modellen at vi med 95% sikkerhet kan forvente at hennes faktiske legext verdi vil være mellom lwr 35.1 kg, fit på 66.4 og upr 97.9 kg. Intervallet tar høyde for den naturlige variasjonen som vil være mellom individuelle utøvere.
+
+
+
+
+### *Trekke slutninger*
+
+\- Bruk datasettet strengtvolume og formuler en modell som gir oss et estimat på forskjell i gjennomsnitt
+mellom sets i forandring fra tidspunkt pre til tidspunkt post i legext. Gi begrunnelse til valg av modell og
+håndtering av data.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(tidyverse)
+library(lme4)
+library(exscidata)
+library(broom.mixed)
+
+mixedmodeldata <- strengthvolume |> 
+                  filter(exercise == "legext", 
+                         time %in% c("pre", "post"))
+
+mm1 <- lmer(load ~ time * sets + (1 | participant), data = mixedmodeldata)
+
+fixed_effects <- tidy(mm1, effects = "fixed")
+
+
+random_effects <- tidy(mm1, effects = "ran_pars")
+
+resultater <- data.frame(
+  Parameter = c(
+    fixed_effects$term,
+    paste0(random_effects$term[random_effects$group != "Residual"]),
+    "sd__Observation"),
+  Estimate = c(
+    round(fixed_effects$estimate, 2),
+    round(random_effects$estimate[random_effects$group != "Residual"], 2),
+    round(random_effects$estimate[random_effects$group == "Residual"], 2)
+  ),
+  SE = c(
+    round(fixed_effects$std.error, 2),
+    rep(NA, nrow(random_effects))
+  )
+)
+
+print(resultater)
+
+```
+
+#### Begrunnelse
+Den individuelle utgangspunktvariasjonen av leg extentions er på 17,68 enheter (SD_Intercept), i tillegg er pre -og postverdiene avhengige, de er fra samme individ. Dette betyr at det ikke er gunstig å anvende en tradisjonell lineær modell, siden den antar at pre -og postverdiene var uavhengige. Modellen hadde heller ikke tatt rede for variasjon i utgangspunkt. Derfor valgte vi å ta i bruk en mixed model for å finne den gjennomsnittlige forskjellen av endring fra pre til post mellom ett og flere sett. En mixed model vil anta at det er variasjoner imellom individer og innad i samme individ. I tillegg vil den anta at det er sammenheng mellom pre -og posttest, siden det er de samme individene som gjennomfører begge tester.
+
+
+### Hvordan kan vi bruke regresjonsmodellen for å si noe om populasjonen som dataene kommer fra?
+Modellen tar pre og "multiple sets" gruppen som utgangspunkt i analysen. Dette vil si at "Multiple sets" gruppen hadde 89,32 enheter belastning ved pre (intercept), som var 32,47 enheter lavere ved pre enn ved post (timepre). "Single sets" gruppen hadde et utgangspunkt 3,94 enheter lavere enn "multiple sets" gruppen(setssingle). "Multiple sets" gruppen økte med 4,39 enheter mer enn "Single sets" gruppen(timepre:setssingle). Derfor kan modellen indikere at flere sett leder til større økning av styrke i populasjonen.
