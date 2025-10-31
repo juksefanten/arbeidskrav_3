@@ -119,6 +119,10 @@ ny
 
 ```{r}
 
+#| echo: false
+#| warning: false
+#| message: false
+
 library(tidyverse)
 library(exscidata)
 data("strengthvolume")
