@@ -53,3 +53,21 @@ For eksempel, en treningsintervensjon kan øke lean body mass både direkte og i
 ## 7. Beskriv effekten av å kontrollere for en variabel som påvirkes av utfall og avhengig variabel i en regresjonsanalyse (en collider). 
 
 ## 8. Beskriv ved hjelp av en grafisk modell (Directed Acyclic Graph) en positiv sammenheng mellom konsumpsjon av sukkerfri brus og diabetes. Begrense antall variabler til \< 4 og begrunn din modell
+
+```{r}
+
+#| echo: false
+#| warning: false
+#| message: false
+
+library(dagitty)
+
+# Vi antar at Overvekt påvirker både sukkerfri brus og diabetes siden spørsmålet antyder det
+dag <- dagitty("dag {
+  Overvekt -> SukkerfriBrus
+  Overvekt -> Diabetes
+  SukkerfriBrus -> Diabetes
+}")
+
+plot(dag)
+```
