@@ -1,7 +1,8 @@
 ---
-title: "Untitled"
-format: html
+title: "Arbeidskrav 3, Gard, Sebastian og Henrik"
+format: pdf
 editor: visual
+output: pdf_document
 ---
 
 # Beskrive sammenhenger
@@ -118,7 +119,6 @@ ny
 - Bruk data fra en tidspunkt (time) og et treningsvolum (sets)
 
 ```{r}
-
 #| echo: false
 #| warning: false
 #| message: false
@@ -126,9 +126,6 @@ ny
 library(tidyverse)
 library(exscidata)
 data("strengthvolume")
-
-#liten titt på datasett
-glimpse(strengthvolume)
 
 #filtrere og omstrukturere data, (et tidspunkt + et treningsvolum)
 dat <- exscidata::strengthvolume %>%
