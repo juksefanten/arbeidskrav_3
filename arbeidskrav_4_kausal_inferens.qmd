@@ -50,7 +50,7 @@ Når man kontrollerer for en mediator, fjerner man den indirekte effekten som g�
 
 For eksempel, en treningsintervensjon kan øke lean body mass både direkte og indirekte via økt matinntak. Hvis vi kontrollerer mediatoren matinntak, vil den målte effekten av treningen bli lavere enn den totale effekten, fordi den indirekte effekten via matinntaket fjernes.
 
-## 7. Beskriv effekten av å kontrollere for en variabel som påvirkes av utfall og avhengig variabel i en regresjonsanalyse (en collider). 
+## 7. Beskriv effekten av å kontrollere for en variabel som påvirkes av utfall og avhengig variabel i en regresjonsanalyse (en collider).
 
 ## 8. Beskriv ved hjelp av en grafisk modell (Directed Acyclic Graph) en positiv sammenheng mellom konsumpsjon av sukkerfri brus og diabetes. Begrense antall variabler til \< 4 og begrunn din modell
 
