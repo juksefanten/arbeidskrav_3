@@ -66,7 +66,6 @@ Hvis man kontrollerer for mengde svette i en regresjonsmodell vil det skape en f
 ## 8. Beskriv ved hjelp av en grafisk modell (Directed Acyclic Graph) en positiv sammenheng mellom konsumpsjon av sukkerfri brus og diabetes. Begrense antall variabler til \< 4 og begrunn din modell
 
 ```{r}
-
 #| echo: false
 #| warning: false
 #| message: false
