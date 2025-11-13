@@ -1,9 +1,8 @@
 ---
 title: "Arbeidskrav 3"
 author: Sebastian, Henrik og Gard
-format: pdf
+format: html
 editor: visual
-output: pdf_document
 ---
 
 # Beskrive sammenhenger
