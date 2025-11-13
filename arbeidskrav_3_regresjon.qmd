@@ -1,8 +1,8 @@
 ---
-title: "Arbeidskrav 3, Gard, Sebastian og Henrik"
-format: pdf
+title: "Arbeidskrav 3"
+author: Sebastian, Henrik og Gard
+format: html
 editor: visual
-output: pdf_document
 ---
 
 # Beskrive sammenhenger
@@ -159,7 +159,7 @@ For prediksjoner innad i hvert kjønn bruker vi den samme stigningen på 0.164, 
 
 ### Modellen gir deg et estimat, men for en gitt verdi på legpress, hva sier modellen om i hvilket område vi kan forvente å finne nye observasjoner?
 
-For en gitt legpress verdi (200kg), gir modellen oss et prediksjonsintervall. For en ny kvinnelig utøver med 200kg i legpress, sier modellen at vi med 95% sikkerhet kan forvente at hennes faktiske legext verdi vil være mellom lwr 35.1 kg, fit på 66.4 og upr 97.9 kg. Intervallet tar høyde for den naturlige variasjonen som vil være mellom individuelle utøvere.
+For en gitt legpress verdi (200kg), gir modellen oss et prediksjonsintervall. For en ny kvinnelig utøver med 200 kg i leg press predikerer modellen et forventet gjennomsnitt (fit) på 66,4 kg i leg extension, med et 95 % prediksjonsintervall fra 35,1 (nedre grense) til 97,9 kg (øvre grense). Dette intervallet gjenspeiler den naturlige variasjonen som forekommer mellom individuelle utøvere.
 
 ### *Trekke slutninger*
 
