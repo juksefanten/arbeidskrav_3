@@ -159,9 +159,7 @@ For prediksjoner innad i hvert kjønn bruker vi den samme stigningen på 0.164, 
 
 ### Modellen gir deg et estimat, men for en gitt verdi på legpress, hva sier modellen om i hvilket område vi kan forvente å finne nye observasjoner?
 
-For en gitt legpress verdi (200kg), gir modellen oss et prediksjonsintervall. For en ny kvinnelig utøver med 200 kg i leg press predikerer modellen et forventet gjennomsnitt (fit) på 66,4 kg i leg extension, med et 95 % prediksjonsintervall fra 35,1 til 97,9 kg. Dette intervallet gjenspeiler den naturlige variasjonen som forekommer mellom individuelle utøvere.
-
-Konfidensintervallet strekker seg fra 35,1 kg (nedre grense) til 97,9 kg (øvre grense), med et estimert gjennomsnitt (fit) på 66,4 kg. Intervallet reflekterer den naturlige variasjonen som forventes mellom individuelle utøvere.
+For en gitt legpress verdi (200kg), gir modellen oss et prediksjonsintervall. For en ny kvinnelig utøver med 200 kg i leg press predikerer modellen et forventet gjennomsnitt (fit) på 66,4 kg i leg extension, med et 95 % prediksjonsintervall fra 35,1 (nedre grense) til 97,9 kg (øvre grense). Dette intervallet gjenspeiler den naturlige variasjonen som forekommer mellom individuelle utøvere.
 
 ### *Trekke slutninger*
 
