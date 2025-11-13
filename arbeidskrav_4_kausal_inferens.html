@@ -138,6 +138,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="beskriv-effekten-av-å-kontrollere-for-en-variabel-som-påvirkes-av-utfall-og-avhengig-variabel-i-en-regresjonsanalyse-en-collider." class="level2">
 <h2 class="anchored" data-anchor-id="beskriv-effekten-av-å-kontrollere-for-en-variabel-som-påvirkes-av-utfall-og-avhengig-variabel-i-en-regresjonsanalyse-en-collider.">7. Beskriv effekten av å kontrollere for en variabel som påvirkes av utfall og avhengig variabel i en regresjonsanalyse (en collider).</h2>
+<p>En collider er en variabel som påvirkes direkte av to eller flere utfallsvariabler. Eksempelvis:</p>
+<ul>
+<li>Treningsintensitet = X</li>
+<li>Romtemperatur = Y</li>
+<li>Mengde svette = C</li>
+</ul>
+<p>Både romtemperatur og treningsintensitet påvirker mengde svette, men treningsintensitet påvirker ikke romteperatur.</p>
+<ul>
+<li>Romtemperatur -&gt; Mengde svette &lt;- Treningsintensitet</li>
+</ul>
+<p>Hvis man kontrollerer for mengde svette i modellen vil det se ut som romtemperatur påvirker treningsintensitet og vice versa indirekte. Derfor er det ugunstig kontrollere for mengde svette, som er en konsekvens av både treningsintensitet og romtemperatur i modellen.</p>
 </section>
 <section id="beskriv-ved-hjelp-av-en-grafisk-modell-directed-acyclic-graph-en-positiv-sammenheng-mellom-konsumpsjon-av-sukkerfri-brus-og-diabetes.-begrense-antall-variabler-til-4-og-begrunn-din-modell" class="level2">
 <h2 class="anchored" data-anchor-id="beskriv-ved-hjelp-av-en-grafisk-modell-directed-acyclic-graph-en-positiv-sammenheng-mellom-konsumpsjon-av-sukkerfri-brus-og-diabetes.-begrense-antall-variabler-til-4-og-begrunn-din-modell">8. Beskriv ved hjelp av en grafisk modell (Directed Acyclic Graph) en positiv sammenheng mellom konsumpsjon av sukkerfri brus og diabetes. Begrense antall variabler til &lt; 4 og begrunn din modell</h2>
