@@ -13,9 +13,11 @@ Når vi skal beskrive sammenhenger mellom to kontinuerlige variabler i en regres
 
 En enkel lineær regresjon kan uttrykkes slik:
 
-### Yi=β0+β1Xi+εi
 
-### ​
+$$
+y_i = \beta_0 + \beta_1 x_i + \varepsilon_i
+$$
+
 
 Her representerer $\beta_0$ skjæringspunktet, $\beta_1$ stigningstallet (den gjennomsnittlige endringen i *Y* per enhet *X*), og $\varepsilon_i$ den tilfeldige variasjonen. Dersom *X = vo2maks* og *Y = Wmaks*, vil $\beta_1$ vise hvor mye wattmaks i snitt øker per ekstra ml/min i vo2maks.
 
@@ -30,21 +32,46 @@ Eksempelet viser at korrelasjonen mellom vo2maks og maksimal effekt er r = 0,79,
 
 library(tidyverse)
 library(exscidata)
+library(broom)
+library(gt)
+
 
 cycling <- exscidata::cyclingstudy
 
-
 m1 <- lm(end.load ~ VO2.max, data = cycling)
-summary(m1)
+
+ct <- cor.test(cycling$VO2.max, cycling$end.load)
+cor_value <- unname(ct$estimate)          
+
+# Stigningstall og R^2
+beta1 <- coef(m1)["VO2.max"]
+r2    <- summary(m1)$r.squared
 
 
-cor.test(cycling$VO2.max, cycling$end.load)
+summary_tab <- tibble(
+  Mål   = c("Regresjonskoeffisient (β₁)", "Korrelasjon (r)", "Forklaringsgrad (R²)"),
+  Verdi = c(beta1, cor_value, r2)
+) |>
+  mutate(Verdi = round(Verdi, 3))
 
+summary_tab |>
+  gt()
+
+broom::tidy(m1) |>
+  select(term, estimate, std.error, statistic, p.value) |>
+  mutate(across(where(is.numeric), ~ round(.x, 3))) |>
+  gt()
+
+broom::glance(m1) |>
+  select(r.squared, adj.r.squared, statistic, p.value, sigma) |>
+  mutate(across(where(is.numeric), ~ round(.x, 3))) |>
+  gt()
 
 ggplot(cycling, aes(x = VO2.max, y = end.load)) +
   geom_point() +
-  geom_smooth(method = "lm") +
+  geom_smooth(method = "lm", se = TRUE) +
   theme_minimal()
+
 
 ```
 
@@ -80,15 +107,17 @@ ggplot(boston_dat, aes(x = gender, y = speed)) +
 
 ## Hvordan kan vi tolke estimatet i en generalisert lineær modell hvor den avhengige variabelen er enten 1 eller 0? Hva betyr «link-function» i denne sammenhengen og hva gjør den?
 
-Når den avhengige variabelen bare kan være 1 eller 0 (for eksempel skade = 1 og ingen skade = 0), bruker vi en logistisk regresjon. Det er en type generalisert lineær modell som gjør det mulig å analysere sannsynligheter.
+Når den avhengige variabelen bare kan være 1 eller 0 (for eksempel skade = 1 og ingen skade = 0), bruker vi en logistisk regresjon. Det er en type generalisert lineær modell som gjør det mulig å analysere sannsynligheter. Siden sannsynligheter alltid må ligge mellom 0 og 1, brukes en link-funksjon kalt logit, som gjør om sannsynligheten p til log-odds. Dette lar oss bruke en lineær modell til å beskrive sammenhengen mellom variablene.
+Logit-modellen kan skrives som:
 
-Siden sannsynligheter alltid må ligge mellom 0 og 1, brukes en link-funksjon kalt logit, som gjør om sannsynligheten (p) til log-odds. Dette lar oss bruke en lineær modell til å beskrive sammenhengen mellom variablene:
+$$
+\text{logit}(p) = \log\left(\frac{p}{1 - p}\right) = \beta_0 + \beta_1 X_i
+$$
 
-logit(p)=log⁡(p1−p)=β0+β1Xi​
 
-Her viser β1​ hvordan log-oddsen for skade endres når den uavhengige variabelen endres med én enhet. Når vi tar den naturlige eksponenten av estimatet (eβ1​), får vi odds-ratio, som forteller hvor mye oddsen for skade øker eller minker.
+I denne modellen er p sannsynligheten for utfallet (for eksempel skade). Forholdet p / (1 − p) kalles oddsen, altså hvor mye mer sannsynlig det er at utfallet skjer enn at det ikke skjer. Logit-funksjonen tar logaritmen av oddsen slik at vi kan bruke en vanlig lineær modell selv om sannsynligheten bare går fra 0 til 1. β₀ er log-oddsen i referansegruppen (når alle variabler = 0), mens β₁ viser hvor mye log-oddsen endrer seg når den uavhengige variabelen øker med én enhet. Hvis vi tar exp(β₁), får vi en odds ratio som viser hvordan oddsen for skade endres i praksis.
 
-I eksempelet under undersøkes sammenhengen mellomvoppvarmingsrutine og hamtringsfleksibilitet og risiko for skade. Modellen predikerer log-odds for skade, som deretter omregnes til odds ved hjelp av exp()-funksjonen. Når hamstringsfleksibiliteten er 80, viser resultatene at oddsen for skade er 1,70 uten oppvaring og 0,55 med oppvarming. Dette betyr at spillere som følger oppvarmingsrutinen har lavere odds for skade sammenlignet med dem som ikke gjør det.
+I eksempelet under undersøkes sammenhengen mellom oppvarmingsrutine og hamstringsfleksibilitet og risiko for skade. Modellen predikerer log-odds for skade, som deretter omregnes til odds ved hjelp av exp()-funksjonen. Når hamstringsfleksibiliteten er 80, viser resultatene at oddsen for skade er 1,70 uten oppvarming og 0,55 med oppvarming. Dette betyr at spillere som følger oppvarmingsrutinen har lavere odds for skade sammenlignet med dem som ikke gjør det.
 
 ```{r}
 #| echo: false
@@ -211,4 +240,4 @@ Den individuelle utgangspunktvariasjonen av leg extentions er på 17,68 enheter 
 
 ### Hvordan kan vi bruke regresjonsmodellen for å si noe om populasjonen som dataene kommer fra?
 
-Modellen tar post og "multiple sets" gruppen som utgangspunkt i analysen. Dette vil si at gjennomsnittlig belastning til "Multiple sets" gruppen var 89,32 enheter ved post (intercept), pre var 32,47 enheter lavere enn post (timepre). "Single sets" gruppen hadde et utgangspunkt 3,94 enheter lavere enn "multiple sets" gruppen(setssingle). "Multiple sets" gruppen økte med 4,39 enheter mer enn "Single sets" gruppen(timepre:setssingle). Derfor kan modellen indikere at flere sett leder til større økning av styrke i populasjonen. Fordi en mixed model skiller mellom faste populasjonseffekter og tilfeldig individuell variasjon, kan vi tolke disse estimatene som forventede verdier i populasjonen – ikke bare i dette utvalget. 
+Modellen tar post og "multiple sets" gruppen som utgangspunkt i analysen. Dette vil si at gjennomsnittlig belastning til "Multiple sets" gruppen var 89,32 enheter ved post (intercept), pre var 32,47 enheter lavere enn post (timepre). "Single sets" gruppen hadde et utgangspunkt 3,94 enheter lavere enn "multiple sets" gruppen(setssingle). "Multiple sets" gruppen økte med 4,39 enheter mer enn "Single sets" gruppen(timepre:setssingle). Derfor kan modellen indikere at flere sett leder til større økning av styrke i populasjonen. Fordi en mixed model skiller mellom faste populasjonseffekter og tilfeldig individuell variasjon, kan vi tolke disse estimatene som forventede verdier i populasjonen – ikke bare i dette utvalget.
