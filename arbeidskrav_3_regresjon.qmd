@@ -79,7 +79,12 @@ ggplot(cycling, aes(x = VO2.max, y = end.load)) +
 
 Når den avhengige variabelen er kontinuerlig, men den uavhengige er kategorisk, kan vi fortsatt bruke en lineær regresjonsmodell for å undersøke forskjeller mellom grupper. Vi kan undersøke om menn og kvinner har forskjellig gjennomsnittlig løpshastighet i Boston Marathon. Modellen kan skrives som:
 
-$$Yi=β0+β1(genderM)i+εi$$
+
+
+$$
+Y_i = \beta_0 + \beta_1(\text{genderM})_i + \varepsilon_i
+$$
+
 
 ​Her representerer $\beta_0$ gjennomsnittet for referansegruppen (kvinner, kodet som 0), mens $\beta_1$ viser forskjellen i gjennomsnittlig hastighet mellom menn og kvinner. Dersom $\beta_1$ er positiv, betyr det at menn i gjennomsnitt har høyere hastighet enn kvinner med en verdi tilsvarende størrelsen på $\beta_1$. Resultatene fra regresjonsmodellen viste at gjennomsnittshastigheten for kvinner var β₀ = 9,58 km/t, mens menn i gjennomsnitt løp β₁ = 0,86 km/t raskere.
 
@@ -87,18 +92,31 @@ $$Yi=β0+β1(genderM)i+εi$$
 #| echo: false
 #| warning: false
 #| message: false
-
+library(tidyverse)
 library(exscidata)
+library(broom)
+library(gt)
 
 boston_dat <- exscidata::boston %>% 
   filter(year == 2012) %>% 
   mutate(speed = 42 / (seconds / 60 / 60))
 
-
 m2 <- lm(speed ~ gender, data = boston_dat)
-summary(m2)
 
+# Estimattabell
+tidy(m2) %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3))) %>% 
+  gt() %>% 
+  tab_header(title = "Regresjonsestimat for modell: speed ~ gender")
 
+# Modelloppsummering
+glance(m2) %>% 
+  select(r.squared, adj.r.squared, statistic, p.value, sigma) %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3))) %>% 
+  gt() %>% 
+  tab_header(title = "Modelloppsummering for speed ~ gender")
+
+# Figur
 ggplot(boston_dat, aes(x = gender, y = speed)) +
   geom_boxplot() +
   theme_minimal()
