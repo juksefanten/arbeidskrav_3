@@ -20,41 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -138,40 +103,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="beskriv-effekten-av-å-kontrollere-for-en-variabel-som-påvirkes-av-utfall-og-avhengig-variabel-i-en-regresjonsanalyse-en-collider." class="level2">
 <h2 class="anchored" data-anchor-id="beskriv-effekten-av-å-kontrollere-for-en-variabel-som-påvirkes-av-utfall-og-avhengig-variabel-i-en-regresjonsanalyse-en-collider.">7. Beskriv effekten av å kontrollere for en variabel som påvirkes av utfall og avhengig variabel i en regresjonsanalyse (en collider).</h2>
-<p>En collider er en variabel som påvirkes direkte av to eller flere utfallsvariabler. Eksempelvis:</p>
+<p>En collider er en variabel som påvirkes både av den avhengige og uavhengige variabelen. Eksempelvis:</p>
 <ul>
-<li>Treningsintensitet = X</li>
-<li>Romtemperatur = Y</li>
-<li>Mengde svette = C</li>
+<li>Treningsintensitet = X (Uavhengig variabel)</li>
+<li>Romtemperatur = Y (Avhengig variabel)</li>
+<li>Mengde svette = C (Collider)</li>
 </ul>
-<p>Både romtemperatur og treningsintensitet påvirker mengde svette, men treningsintensitet påvirker ikke romteperatur.</p>
+<p>Både romtemperatur og treningsintensitet påvirker mengde svette, men treningsintensitet påvirker ikke romteperatur. Visuelt eksempel:</p>
 <ul>
 <li>Romtemperatur -&gt; Mengde svette &lt;- Treningsintensitet</li>
 </ul>
-<p>Hvis man kontrollerer for mengde svette i modellen vil det se ut som romtemperatur påvirker treningsintensitet og vice versa indirekte. Derfor er det ugunstig kontrollere for mengde svette, som er en konsekvens av både treningsintensitet og romtemperatur i modellen.</p>
+<p>Hvis man kontrollerer for mengde svette i en regresjonsmodell vil det skape en falsk korrelasjon mellom Treningsintensitet og Romtemperatur. Derfor er det ugunstig å kontrollere for mengde svette, som er en konsekvens av både treningsintensitet og romtemperatur i modellen.</p>
 </section>
 <section id="beskriv-ved-hjelp-av-en-grafisk-modell-directed-acyclic-graph-en-positiv-sammenheng-mellom-konsumpsjon-av-sukkerfri-brus-og-diabetes.-begrense-antall-variabler-til-4-og-begrunn-din-modell" class="level2">
 <h2 class="anchored" data-anchor-id="beskriv-ved-hjelp-av-en-grafisk-modell-directed-acyclic-graph-en-positiv-sammenheng-mellom-konsumpsjon-av-sukkerfri-brus-og-diabetes.-begrense-antall-variabler-til-4-og-begrunn-din-modell">8. Beskriv ved hjelp av en grafisk modell (Directed Acyclic Graph) en positiv sammenheng mellom konsumpsjon av sukkerfri brus og diabetes. Begrense antall variabler til &lt; 4 og begrunn din modell</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'dagitty' was built under R version 4.4.3</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Vi antar at Overvekt påvirker både sukkerfri brus og diabetes siden spørsmålet antyder det</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag {</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">  Overvekt -&gt; SukkerfriBrus</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Overvekt -&gt; Diabetes</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">  SukkerfriBrus -&gt; Diabetes</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Plot coordinates for graph not supplied! Generating coordinates, see ?coordinates for how to set your own.</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -180,6 +126,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p>Forklaringen på den positive sammenhengen mellom sukkerfri brus og diabetes er at det fins en confounder: Overvekt. Overvekt øker sjansen for utvikling av diabetes, i tillegg til et høyere inntak av sukkerfri brus. Derfor kan man si at det er korrelasjon mellom sukkerfri brus og diabetes, ikke en kausal effekt.</p>
 </section>
 
 </main>

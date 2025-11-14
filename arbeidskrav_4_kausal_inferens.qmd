@@ -1,7 +1,10 @@
 ---
 title: "Kausal inferens av Sebastian, Henrik og Gard"
 format: html
-editor: visual
+html: default
+pdf:
+  output-ext: pdf
+  output-file: Arbeidskrav4.pdf
 ---
 
 ## **1. Definisjon av en kausal effekt**
@@ -51,16 +54,17 @@ Når man kontrollerer for en mediator, fjerner man den indirekte effekten som g�
 For eksempel, en treningsintervensjon kan øke lean body mass både direkte og indirekte via økt matinntak. Hvis vi kontrollerer mediatoren matinntak, vil den målte effekten av treningen bli lavere enn den totale effekten, fordi den indirekte effekten via matinntaket fjernes.
 
 ## 7. Beskriv effekten av å kontrollere for en variabel som påvirkes av utfall og avhengig variabel i en regresjonsanalyse (en collider).
-En collider er en variabel som påvirkes både av den avhengige og uavhengige variabelen. Eksempelvis: 
 
--  Treningsintensitet = X (Uavhengig variabel)
--  Romtemperatur = Y (Avhengig variabel)
--  Mengde svette = C  (Collider)
+En collider er en variabel som påvirkes både av den avhengige og uavhengige variabelen. Eksempelvis:
+
+-   Treningsintensitet = X (Uavhengig variabel)
+-   Romtemperatur = Y (Avhengig variabel)
+-   Mengde svette = C (Collider)
 
 Både romtemperatur og treningsintensitet påvirker mengde svette, men treningsintensitet påvirker ikke romteperatur. Visuelt eksempel:
 
--  Romtemperatur -> Mengde svette <- Treningsintensitet 
- 
+-   Romtemperatur -> Mengde svette <- Treningsintensitet
+
 Hvis man kontrollerer for mengde svette i en regresjonsmodell vil det skape en falsk korrelasjon mellom Treningsintensitet og Romtemperatur. Derfor er det ugunstig å kontrollere for mengde svette, som er en konsekvens av både treningsintensitet og romtemperatur i modellen.
 
 ## 8. Beskriv ved hjelp av en grafisk modell (Directed Acyclic Graph) en positiv sammenheng mellom konsumpsjon av sukkerfri brus og diabetes. Begrense antall variabler til \< 4 og begrunn din modell
@@ -72,12 +76,13 @@ Hvis man kontrollerer for mengde svette i en regresjonsmodell vil det skape en f
 
 library(dagitty)
 
-# Vi antar at Overvekt påvirker både sukkerfri brus og diabetes siden spørsmålet antyder det
+
 dag <- dagitty("dag {
   Overvekt -> SukkerfriBrus
   Overvekt -> Diabetes
-  SukkerfriBrus -> Diabetes
 }")
 
 plot(dag)
 ```
+
+Forklaringen på den positive sammenhengen mellom sukkerfri brus og diabetes er at det fins en confounder: Overvekt. Overvekt øker sjansen for utvikling av diabetes, i tillegg til et høyere inntak av sukkerfri brus. Derfor kan man si at det er korrelasjon mellom sukkerfri brus og diabetes, ikke en kausal effekt. 
