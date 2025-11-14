@@ -241,4 +241,4 @@ Den individuelle utgangspunktvariasjonen av leg extensions er på 17,68 enheter 
 
 ### Hvordan kan vi bruke regresjonsmodellen for å si noe om populasjonen som dataene kommer fra?
 
-Modellen estimerer at populasjonsgjennomsnitlig utgangspunkt for multiple sets er 56,86 enheter (intercept), og 57,31 enheter for single sets (intercept + setssingle). Den forventede populasjonsøkningen fra pre til post i multiple sets er 32,47 enheter (timepost), på single sets er det 28,08 enheter (timepost + timepost:setssingle). 
+Modellen estimerer at populasjonsgjennomsnitlig utgangspunkt for multiple sets er 56,86 kg (intercept), og 57,31 kg for single sets (intercept + setssingle). Den estimerte økningen for populasjonen fra pre til post i multiple sets er 32,47 kg (timepost), på single sets er det 4,39kg mindre enn multiple sets (timepost:setssingle). Modellen estimerer at gjennomsnittlig forskjell i utgangspunkt mellom multiple og single sets gruppen er liten (setssingle = 0.45 kg), men på individnivå er variasjonen i utgangspunktet stor(sd_(intercept) = 17,68 kg).
