@@ -13,11 +13,9 @@ Når vi skal beskrive sammenhenger mellom to kontinuerlige variabler i en regres
 
 En enkel lineær regresjon kan uttrykkes slik:
 
-
 $$
 y_i = \beta_0 + \beta_1 x_i + \varepsilon_i
 $$
-
 
 Her representerer $\beta_0$ skjæringspunktet, $\beta_1$ stigningstallet (den gjennomsnittlige endringen i *Y* per enhet *X*), og $\varepsilon_i$ den tilfeldige variasjonen. Dersom *X = vo2maks* og *Y = Wmaks*, vil $\beta_1$ vise hvor mye wattmaks i snitt øker per ekstra ml/min i vo2maks.
 
@@ -79,12 +77,9 @@ ggplot(cycling, aes(x = VO2.max, y = end.load)) +
 
 Når den avhengige variabelen er kontinuerlig, men den uavhengige er kategorisk, kan vi fortsatt bruke en lineær regresjonsmodell for å undersøke forskjeller mellom grupper. Vi kan undersøke om menn og kvinner har forskjellig gjennomsnittlig løpshastighet i Boston Marathon. Modellen kan skrives som:
 
-
-
 $$
 Y_i = \beta_0 + \beta_1(\text{genderM})_i + \varepsilon_i
 $$
-
 
 ​Her representerer $\beta_0$ gjennomsnittet for referansegruppen (kvinner, kodet som 0), mens $\beta_1$ viser forskjellen i gjennomsnittlig hastighet mellom menn og kvinner. Dersom $\beta_1$ er positiv, betyr det at menn i gjennomsnitt har høyere hastighet enn kvinner med en verdi tilsvarende størrelsen på $\beta_1$. Resultatene fra regresjonsmodellen viste at gjennomsnittshastigheten for kvinner var β₀ = 9,58 km/t, mens menn i gjennomsnitt løp β₁ = 0,86 km/t raskere.
 
@@ -103,20 +98,17 @@ boston_dat <- exscidata::boston %>%
 
 m2 <- lm(speed ~ gender, data = boston_dat)
 
-# Estimattabell
 tidy(m2) %>% 
   mutate(across(where(is.numeric), ~ round(.x, 3))) %>% 
   gt() %>% 
   tab_header(title = "Regresjonsestimat for modell: speed ~ gender")
 
-# Modelloppsummering
 glance(m2) %>% 
   select(r.squared, adj.r.squared, statistic, p.value, sigma) %>% 
   mutate(across(where(is.numeric), ~ round(.x, 3))) %>% 
   gt() %>% 
   tab_header(title = "Modelloppsummering for speed ~ gender")
 
-# Figur
 ggplot(boston_dat, aes(x = gender, y = speed)) +
   geom_boxplot() +
   theme_minimal()
@@ -125,13 +117,11 @@ ggplot(boston_dat, aes(x = gender, y = speed)) +
 
 ## Hvordan kan vi tolke estimatet i en generalisert lineær modell hvor den avhengige variabelen er enten 1 eller 0? Hva betyr «link-function» i denne sammenhengen og hva gjør den?
 
-Når den avhengige variabelen bare kan være 1 eller 0 (for eksempel skade = 1 og ingen skade = 0), bruker vi en logistisk regresjon. Det er en type generalisert lineær modell som gjør det mulig å analysere sannsynligheter. Siden sannsynligheter alltid må ligge mellom 0 og 1, brukes en link-funksjon kalt logit, som gjør om sannsynligheten p til log-odds. Dette lar oss bruke en lineær modell til å beskrive sammenhengen mellom variablene.
-Logit-modellen kan skrives som:
+Når den avhengige variabelen bare kan være 1 eller 0 (for eksempel skade = 1 og ingen skade = 0), bruker vi en logistisk regresjon. Det er en type generalisert lineær modell som gjør det mulig å analysere sannsynligheter. Siden sannsynligheter alltid må ligge mellom 0 og 1, brukes en link-funksjon kalt logit, som gjør om sannsynligheten p til log-odds. Dette lar oss bruke en lineær modell til å beskrive sammenhengen mellom variablene. Logit-modellen kan skrives som:
 
 $$
 \text{logit}(p) = \log\left(\frac{p}{1 - p}\right) = \beta_0 + \beta_1 X_i
 $$
-
 
 I denne modellen er p sannsynligheten for utfallet (for eksempel skade). Forholdet p / (1 − p) kalles oddsen, altså hvor mye mer sannsynlig det er at utfallet skjer enn at det ikke skjer. Logit-funksjonen tar logaritmen av oddsen slik at vi kan bruke en vanlig lineær modell selv om sannsynligheten bare går fra 0 til 1. β₀ er log-oddsen i referansegruppen (når alle variabler = 0), mens β₁ viser hvor mye log-oddsen endrer seg når den uavhengige variabelen øker med én enhet. Hvis vi tar exp(β₁), får vi en odds ratio som viser hvordan oddsen for skade endres i praksis.
 
